@@ -77,7 +77,7 @@ public class WebSocketCOnfig implements WebSocketMessageBrokerConfigurer {
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         // we need a request that end with /game to get the connection to the server
         // over websocket
-        registry.addEndpoint("game").setAllowedOriginPatterns("*")
+        registry.addEndpoint("/game").setAllowedOriginPatterns("*")
                 .withSockJS();
 
     }
