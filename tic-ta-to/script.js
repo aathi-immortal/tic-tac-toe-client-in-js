@@ -1,47 +1,54 @@
-
-
-
-
-
 let buttons = new Array();
 let id_prefix = "tile-";
 let chanceX = true;
 let isEmptybox = true
+
+let stomp = null;
 document.addEventListener("DOMContentLoaded", function () {
-    
+    connect();
     loadTheButtons();
     addEventListenerToAllButtons();
-    const oLabels = document.querySelectorAll(".tile label[for$='-o']");
-    const xLabels = document.querySelectorAll(".tile label[for$='-x']");
-
-    for(const node of oLabels)
-    {
-        node.addEventListener("click",function()
-        {
-            console.log("ki");
-        })
-    }
-    // oLabels.forEach((oLabel) => {
-    //     oLabel.addEventListener("click", function () {
-    //         updateMark(this.parentElement, "O");
-    //     });
-    // });
-
-    // xLabels.forEach((xLabel) => {
-    //     xLabel.addEventListener("click", function () {
-    //         updateMark(this.parentElement, "X");
-    //     });
-    // });
-
+    
     
 });
+function connect()
+{
+    const socket = new SockJS("http://localhost:8080/game");
+    stomp = Stomp.over(socket);
+    stomp.connect({},function(frame)
+    {
+        console.log("connected");
+        stomp.subscribe("/gameRoom/public",function(frame)
+        {   
+            console.log(message);
+            message = JSON.parse(frame.body);
+            
+            let symbol = message.messageContent;
+            let blockId = message.blockId;
+            
+            updateMark(blockId,symbol);
+            
+        });
+    });
+}
 
+function sendMessage(symbol,id)
+{
+    let movesOb = 
+    {
+        blockId:id,
+        messageContent: symbol
+
+    }
+    stomp.send("/app/move",{},JSON.stringify(movesOb));
+}
 function updateMark(index, mark) {
+    
     const tileDiv = buttons[index].querySelector("div");
     
     tileDiv.textContent = mark;
      // Update the text content
-     console.log(tileDiv);
+     
 }
 
 
@@ -54,24 +61,28 @@ function addEventListenerToAllButtons()
             button.isEmptybox = true;
             button.addEventListener("click",function()
             {
+                    let symbol = "O";
                     if(chanceX){
                         updateMark(index,'X');
-                        
+                        symbol = "X"
                     }
                     else
                     {
                         updateMark(index,'O');
                     }
+                    // send the changes into server using socket connection
+                    
+                    sendMessage(symbol,index);
                     chanceX = !chanceX;
                     this.isEmptybox = false;
             });
             button.addEventListener("mouseenter",function()
             {
-                console.log(this);
+     
                 
                 if(this.isEmptybox)
                 {
-                    console.log(chanceX);
+     
                     
                     if(chanceX){
                         
@@ -120,20 +131,4 @@ function loadTheButtons()
 }
 
 
-// let oLabel = document.querySelector(".tile label[for$='-o']");
-// let xLabel = document.querySelector(".title label[for$='-x']");
-// oLabel.forEach((label)=>
-// {
-//     label.addEventListener("click",function()
-//     {
-//         console.log("press -o");
-//     })
-// })
 
-// xLabel.forEach((label)=>
-// {
-// label.addEventListener("click",()=>
-// {
-//     console.log("kiii");
-// })
-// });
