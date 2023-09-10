@@ -69,8 +69,9 @@ public class WebSocketCOnfig implements WebSocketMessageBrokerConfigurer {
         // is just a simplified example of how you might configure the message broker
         // behavior.
         registry.setApplicationDestinationPrefixes("/app");
-        registry.enableSimpleBroker("/gameRoom", "/user");
-        registry.setUserDestinationPrefix("/user");
+        registry.enableSimpleBroker("/gameRoom", "/user", "/private");
+
+        registry.setUserDestinationPrefix("/private");
 
     }
 
