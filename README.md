@@ -1,1 +1,1 @@
-# tic-tac-toe-client-in-js
+# tic-tac-toe-client-in-java-server
