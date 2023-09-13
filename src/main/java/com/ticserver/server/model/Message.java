@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class Message {
     String reciver;
-    String messageContent;
+    String[] messageContent;
     int roomId;
     String sender;
 }

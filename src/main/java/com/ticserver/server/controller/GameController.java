@@ -29,7 +29,7 @@ public class GameController {
     public void recvivedGameState(@Payload Message message) {
         int roomId = message.getRoomId();
         String destination = "/private/" + roomId;
-        System.out.println(destination);
+        System.out.println(message.getMessageContent());
         template.convertAndSend(destination, message);
 
     }
